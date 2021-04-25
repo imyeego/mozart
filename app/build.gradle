@@ -1,4 +1,16 @@
 apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-kapt'
+apply plugin: 'kotlin-android-extensions'
+
+
+afterEvaluate {
+    tasks.stream().each {
+        println('task:' + it.toString())
+    }
+}
+
+
 
 android {
     compileSdkVersion 29
@@ -8,18 +20,53 @@ android {
         applicationId "com.imyeego.mozart"
         minSdkVersion 19
         targetSdkVersion 29
-        versionCode 1
-        versionName "1.0"
+        versionCode 4
+        versionName "1.4"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+        externalNativeBuild {
+            cmake {
+                cppFlags ""
+                abiFilters "armeabi-v7a", "arm64-v8a"
+            }
+        }
     }
 
     buildTypes {
+        debug {
+
+        }
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    if (isRelease) {
+        sourceSets {
+            main {
+                jniLibs.srcDirs 'src/main/libs'
+                jni.srcDirs = []
+            }
+        }
+    } else {
+        externalNativeBuild {
+            cmake {
+                path 'src/main/cpp/CMakeLists.txt'
+            }
+        }
+    }
+
+    dataBinding {
+        enabled = true
+    }
+
+
 }
 
 dependencies {
@@ -29,5 +76,22 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
+
+    implementation "android.arch.lifecycle:runtime:1.1.1"
+    implementation "android.arch.lifecycle:extensions:1.1.1"
+    implementation "android.arch.lifecycle:common-java8:1.1.1"
+
+    annotationProcessor 'com.google.dagger:dagger-compiler:2.15'
+    implementation 'com.google.dagger:dagger:2.15'
+
+    implementation "android.arch.persistence.room:runtime:$room_version"
+    kapt "android.arch.persistence.room:compiler:$room_version"
+
+    implementation 'com.github.bumptech.glide:glide:4.12.0'
+
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+
+//    debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.2'
+
 
 }
