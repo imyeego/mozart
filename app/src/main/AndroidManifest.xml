@@ -24,6 +24,7 @@
 
         </activity>
         <activity android:name=".SecondActivity"/>
+        <activity android:name=".ThirdActivity"/>
         <service android:name=".MyService"/>
     </application>
 

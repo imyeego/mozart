@@ -44,6 +44,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.ScrollView;
+import android.widget.TabHost;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -96,10 +97,12 @@ public class MainActivity extends AppCompatActivity {
 
     MutableLiveData<String> liveData;
     ActivityMainBinding binding;
+
+    TabHost tabHost;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_main);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
 
         Log.e(TAG, "onCreate");
@@ -135,6 +138,8 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
+
+
     }
 
     class Run implements DefaultLifecycleObserver {
