@@ -3,10 +3,8 @@ package com.imyeego.mozart
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.coroutines.*
 
 /**
  * @authur : liuzhao
@@ -21,7 +19,6 @@ class ThirdActivity : AppCompatActivity() {
     }
 
     val coroutineScope by lazy {
-        Log.e(TAG, "coroutineScope init ...")
         CoroutineScope(Dispatchers.Main)
     }
 
@@ -31,7 +28,20 @@ class ThirdActivity : AppCompatActivity() {
 
         coroutineScope.launch {
             Log.e(TAG, Thread.currentThread().name)
-
+            var text = getText()
+            mytv.text = text
         }
+    }
+
+    private suspend fun getText() : String {
+        var text = "";
+        withContext(Dispatchers.IO) {
+            Log.e(TAG, Thread.currentThread().name)
+            delay(5000)
+            text = "liuzhao"
+        }
+
+
+        return text;
     }
 }
