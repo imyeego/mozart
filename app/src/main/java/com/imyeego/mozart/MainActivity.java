@@ -14,7 +14,6 @@ import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.Transformations;
-import androidx.lifecycle.ViewModelProviders;
 
 import android.app.ActivityManager;
 import android.app.AlarmManager;
@@ -117,6 +116,8 @@ public class MainActivity extends AppCompatActivity {
             Log.e("databinding", person.getName());
 //            startActivity(new Intent(MainActivity.this, SecondActivity.class));
         });
+
+        String json = "{}";
 
 
         liveData = new MutableLiveData<>();

@@ -1,5 +1,8 @@
 package com.imyeego.mozart
 
+import android.app.Activity
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
@@ -22,15 +25,19 @@ class ThirdActivity : AppCompatActivity() {
         CoroutineScope(Dispatchers.Main)
     }
 
+    var job: Job? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        coroutineScope.launch {
+        job = coroutineScope.launch {
             Log.e(TAG, Thread.currentThread().name)
             var text = getText()
             mytv.text = text
         }
+
+
     }
 
     private suspend fun getText() : String {
@@ -42,6 +49,15 @@ class ThirdActivity : AppCompatActivity() {
         }
 
 
-        return text;
+        return text
+    }
+
+    private inline fun <reified T: Activity> startActivity(context: Context) {
+        startActivity(Intent(context, T::class.java))
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        job?.cancel()
     }
 }
