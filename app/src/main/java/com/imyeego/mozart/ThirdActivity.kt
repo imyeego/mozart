@@ -6,6 +6,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
+import com.google.gson.Gson
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.coroutines.*
 
@@ -37,6 +38,8 @@ class ThirdActivity : AppCompatActivity() {
             mytv.text = text
         }
 
+        val json = ""
+        val person: Person = Gson().fromJson(json)
 
     }
 
@@ -55,6 +58,8 @@ class ThirdActivity : AppCompatActivity() {
     private inline fun <reified T: Activity> startActivity(context: Context) {
         startActivity(Intent(context, T::class.java))
     }
+
+    inline fun <reified T> Gson.fromJson(json: String) = fromJson(json, T::class.java)
 
     override fun onDestroy() {
         super.onDestroy()
