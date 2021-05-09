@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import com.google.gson.Gson
 import kotlinx.android.synthetic.main.activity_main.*
@@ -16,30 +17,23 @@ import kotlinx.coroutines.*
  * @Des    :
  *
  */
-class ThirdActivity : AppCompatActivity() {
+class ThirdActivity : BaseActivity(){
 
     companion object {
-        val TAG = "ThirdActivity"
+        const val TAG = "ThirdActivity"
     }
 
-    val coroutineScope by lazy {
-        CoroutineScope(Dispatchers.Main)
-    }
-
-    var job: Job? = null
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
-
-        job = coroutineScope.launch {
+    override fun initView(savedInstanceState: Bundle?) {
+        launch {
             Log.e(TAG, Thread.currentThread().name)
             var text = getText()
             mytv.text = text
+            startActivity<SecondActivity>(context)
         }
 
         val json = ""
         val person: Person = Gson().fromJson(json)
+
 
     }
 
@@ -55,14 +49,13 @@ class ThirdActivity : AppCompatActivity() {
         return text
     }
 
-    private inline fun <reified T: Activity> startActivity(context: Context) {
-        startActivity(Intent(context, T::class.java))
-    }
+
 
     inline fun <reified T> Gson.fromJson(json: String) = fromJson(json, T::class.java)
 
+    override fun getLayoutId() = R.layout.activity_main
+
     override fun onDestroy() {
         super.onDestroy()
-        job?.cancel()
     }
 }
