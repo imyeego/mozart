@@ -3,6 +3,12 @@
     package="com.imyeego.mozart">
 
     <uses-permission android:name="android.permission.SET_TIME" />
+    <!-- 开启网络访问权限 -->
+    <uses-permission android:name="android.permission.INTERNET">
+    </uses-permission>
+
+    <!-- 允许访问网络状态的权限 -->
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
