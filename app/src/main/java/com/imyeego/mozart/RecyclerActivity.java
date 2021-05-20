@@ -60,8 +60,8 @@ public class RecyclerActivity extends AppCompatActivity {
     }
 
     private void remove(int start, int size) {
-        for (int i = 1; i <= size; i++) {
-            list.remove(start + i);
+        for (int i = 0; i < size; i++) {
+            list.remove(start);
         }
         adapter.notifyItemRangeRemoved(start, size);
     }
