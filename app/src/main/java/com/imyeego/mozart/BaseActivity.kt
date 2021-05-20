@@ -23,9 +23,12 @@ abstract class BaseActivity : AppCompatActivity() , CoroutineScope by MainScope(
         setContentView(getLayoutId())
         context = this
         initView(savedInstanceState)
+        initData()
     }
 
     open fun initView(savedInstanceState: Bundle?) {}
+
+    open fun initData(){}
 
     abstract fun getLayoutId(): Int
 
