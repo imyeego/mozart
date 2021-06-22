@@ -23,6 +23,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.BitmapRegionDecoder;
+import android.graphics.Color;
 import android.graphics.Xfermode;
 import android.os.Bundle;
 import android.os.Debug;
@@ -118,7 +119,8 @@ public class MainActivity extends AppCompatActivity {
         });
 
         String json = "{}";
-
+        ShadowDrawable.Companion.setShadowDrawable(binding.mytv, 5
+                , Color.parseColor("#2a000000"), 5, 0, 0);
 
         liveData = new MutableLiveData<>();
         liveData.observe(this, new Observer<String>() {
