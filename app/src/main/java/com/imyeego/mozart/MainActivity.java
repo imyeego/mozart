@@ -25,6 +25,7 @@ import android.content.SharedPreferences;
 import android.graphics.BitmapRegionDecoder;
 import android.graphics.Color;
 import android.graphics.Xfermode;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Debug;
 import android.os.Handler;
@@ -39,9 +40,12 @@ import android.util.Base64;
 import android.util.Log;
 import android.util.SparseArray;
 import android.view.Choreographer;
+import android.view.KeyEvent;
 import android.view.Surface;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AccelerateDecelerateInterpolator;
+import android.view.animation.LinearInterpolator;
 import android.widget.AbsListView;
 import android.widget.ScrollView;
 import android.widget.TabHost;
@@ -49,6 +53,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.RequestManager;
+import com.facebook.drawee.generic.RoundingParams;
 import com.imyeego.mozart.databinding.ActivityMainBinding;
 
 import java.io.BufferedReader;
@@ -98,6 +103,8 @@ public class MainActivity extends AppCompatActivity {
     MutableLiveData<String> liveData;
     ActivityMainBinding binding;
 
+    BottomDialog bottomDialog;
+
     TabHost tabHost;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -115,12 +122,19 @@ public class MainActivity extends AppCompatActivity {
         binding.mytv.setOnClickListener(v -> {
             binding.mytv.setText("shaqiansi");
             Log.e("databinding", person.getName());
+
+            bottomDialog = new BottomDialog(MainActivity.this);
+            bottomDialog.show();
 //            startActivity(new Intent(MainActivity.this, SecondActivity.class));
         });
+        binding.sdv.getHierarchy().setRoundingParams(RoundingParams.fromCornersRadius(6f).setPaintFilterBitmap(false));
+        binding.sdv.setImageURI(Uri.parse("https://pic6.58cdn.com.cn/nowater/fangfe/n_v2cef7209a32ba4dd9af2663190ed26393.png"));
 
-        String json = "{}";
+        binding.sdv1.getHierarchy().setRoundingParams(RoundingParams.fromCornersRadius(6f).setPaintFilterBitmap(true));
+        binding.sdv1.setImageURI(Uri.parse("https://pic6.58cdn.com.cn/nowater/fangfe/n_v2cef7209a32ba4dd9af2663190ed26393.png"));
+
         ShadowDrawable.Companion.setShadowDrawable(binding.mytv, 5
-                , Color.parseColor("#2a000000"), 5, 0, 0);
+                , Color.parseColor("#2a000000"), 5, 0, 5);
 
         liveData = new MutableLiveData<>();
         liveData.observe(this, new Observer<String>() {
@@ -129,6 +143,7 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
+
         getLifecycle().addObserver(new Run());
         Transformations.map(liveData, new Function<String, Integer>() {
             @Override
@@ -141,8 +156,6 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
-
-
     }
 
     class Run implements DefaultLifecycleObserver {
@@ -310,8 +323,22 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK
+                && event.getAction() == KeyEvent.ACTION_DOWN) {
+            if (bottomDialog != null) bottomDialog.dismiss();
+
+        }
+        return super.onKeyDown(keyCode, event);
+    }
+
+    @Override
     protected void onDestroy() {
         Log.e(TAG, "onDestroy");
         super.onDestroy();
+
+        if (bottomDialog != null) {
+            bottomDialog.dismiss();
+        }
     }
 }

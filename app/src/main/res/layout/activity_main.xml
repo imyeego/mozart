@@ -29,7 +29,6 @@
             android:layout_height="400dp"
             app:layout_constraintTop_toBottomOf="@id/tv"
             android:layout_marginTop="10dp"
-            android:background="@color/colorAccent"
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp">
 
@@ -52,7 +51,27 @@
             android:layout_height="300dp"
             app:layout_constraintTop_toBottomOf="@id/rl"
             android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"/>
+            android:layout_marginRight="20dp"
+            android:visibility="gone"/>
+
+        <com.facebook.drawee.view.SimpleDraweeView
+            android:id="@+id/sdv"
+            android:layout_width="120dp"
+            android:layout_height="56dp"
+            android:scaleType="centerCrop"
+            app:layout_constraintTop_toTopOf="@id/iv"
+            app:layout_constraintLeft_toLeftOf="parent"
+            />
+
+        <com.facebook.drawee.view.SimpleDraweeView
+            android:id="@+id/sdv1"
+            android:layout_width="120dp"
+            android:layout_height="56dp"
+            android:scaleType="centerCrop"
+            app:layout_constraintTop_toTopOf="@id/iv"
+            app:layout_constraintLeft_toRightOf="@id/sdv"
+            android:layout_marginLeft="10dp"
+            />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

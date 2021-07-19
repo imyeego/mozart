@@ -4,25 +4,33 @@ import android.graphics.*
 import com.imyeego.mozart.ShadowDrawable
 import androidx.core.view.ViewCompat
 import android.graphics.drawable.Drawable
+import android.graphics.drawable.GradientDrawable
 import android.view.View
 
 class ShadowDrawable private constructor(
+    target: View?,
     private val mShape: Int,
     bgColor: IntArray,
+    borderWidth: Int,
+    borderColor: Int,
     shapeRadius: Int,
     shadowColor: Int,
     shadowRadius: Int,
     offsetX: Int,
     offsetY: Int
-) : Drawable() {
+) : GradientDrawable() {
     private val mShadowPaint: Paint
     private val mBgPaint: Paint
+    private var mBorderPaint: Paint? = null
     private val mShadowRadius: Int
     private val mShapeRadius: Int
     private val mOffsetX: Int
     private val mOffsetY: Int
     private val mBgColor: IntArray?
+    private val mBorderWidth: Int
+    private val mBorderColor: Int
     private var mRect: RectF? = null
+    private var mOldRect: RectF? = null
     override fun setBounds(left: Int, top: Int, right: Int, bottom: Int) {
         super.setBounds(left, top, right, bottom)
         mRect = RectF(
@@ -30,6 +38,12 @@ class ShadowDrawable private constructor(
             (top + mShadowRadius - mOffsetY).toFloat(),
             (right - mShadowRadius - mOffsetX).toFloat(),
             (bottom - mShadowRadius - mOffsetY).toFloat()
+        )
+        mOldRect = RectF(
+            (left + mShadowRadius + mBorderWidth - mOffsetX).toFloat(),
+            (top + mShadowRadius + mBorderWidth- mOffsetY).toFloat(),
+            (right - mShadowRadius - mBorderWidth- mOffsetX).toFloat(),
+            (bottom - mShadowRadius - mBorderWidth - mOffsetY).toFloat()
         )
     }
 
@@ -52,6 +66,9 @@ class ShadowDrawable private constructor(
                 mShadowPaint
             )
             canvas.drawRoundRect(mRect!!, mShapeRadius.toFloat(), mShapeRadius.toFloat(), mBgPaint)
+            if (mBorderWidth > 0) {
+                canvas.drawRoundRect(mOldRect!!, mShapeRadius.toFloat(), mShapeRadius.toFloat(), mBorderPaint!!)
+            }
         } else {
             canvas.drawCircle(
                 mRect!!.centerX(),
@@ -65,12 +82,21 @@ class ShadowDrawable private constructor(
                 Math.min(mRect!!.width(), mRect!!.height()) / 2,
                 mBgPaint
             )
+            if (mBorderWidth > 0) {
+                canvas.drawCircle(
+                    mOldRect!!.centerX(),
+                    mOldRect!!.centerY(),
+                    Math.min(mOldRect!!.width(), mOldRect!!.height()) / 2,
+                    mBorderPaint!!
+                )
+            }
         }
     }
 
     override fun setAlpha(alpha: Int) {
         mShadowPaint.alpha = alpha
     }
+
 
     override fun setColorFilter(colorFilter: ColorFilter?) {
         mShadowPaint.colorFilter = colorFilter
@@ -81,13 +107,30 @@ class ShadowDrawable private constructor(
     }
 
     class Builder {
-        private var mShape: Int
-        private var mShapeRadius: Int
-        private var mShadowColor: Int
-        private var mShadowRadius: Int
-        private var mOffsetX: Int
-        private var mOffsetY: Int
-        private var mBgColor: IntArray
+        var mShape: Int
+        var mShapeRadius: Int
+        var mShadowColor: Int
+        var mShadowRadius: Int
+        var mOffsetX: Int
+        var mOffsetY: Int
+        var mBgColor: IntArray
+        var target: View? = null
+        var mBorderWidth: Int
+        var mBorderColor: String
+        fun setTarget(mTarget: View): Builder {
+            this.target = mTarget
+            return this
+        }
+
+        fun setBorderWidth(borderWidth: Int):Builder {
+            this.mBorderWidth = borderWidth
+            return this
+        }
+
+        fun setBorderColor(borderColor: String):Builder {
+            this.mBorderColor = borderColor
+            return this
+        }
         fun setShape(mShape: Int): Builder {
             this.mShape = mShape
             return this
@@ -130,8 +173,11 @@ class ShadowDrawable private constructor(
 
         fun builder(): ShadowDrawable {
             return ShadowDrawable(
+                target,
                 mShape,
                 mBgColor,
+                mBorderWidth,
+                Color.parseColor(mBorderColor),
                 mShapeRadius,
                 mShadowColor,
                 mShadowRadius,
@@ -149,6 +195,10 @@ class ShadowDrawable private constructor(
             mOffsetY = 0
             mBgColor = IntArray(1)
             mBgColor[0] = Color.TRANSPARENT
+            mBorderColor = "00ffffff"
+            mBorderWidth = 0
+
+
         }
     }
 
@@ -178,6 +228,7 @@ class ShadowDrawable private constructor(
             offsetY: Int
         ) {
             val drawable = Builder()
+                .setTarget(view)
                 .setShapeRadius(shapeRadius)
                 .setShadowColor(shadowColor)
                 .setShadowRadius(shadowRadius)
@@ -208,6 +259,7 @@ class ShadowDrawable private constructor(
             offsetY: Int
         ) {
             val drawable = Builder()
+                .setTarget(view)
                 .setBgColor(bgColor)
                 .setShapeRadius(shapeRadius)
                 .setShadowColor(shadowColor)
@@ -241,6 +293,7 @@ class ShadowDrawable private constructor(
             offsetY: Int
         ) {
             val drawable = Builder()
+                .setTarget(view)
                 .setShape(shape)
                 .setBgColor(bgColor)
                 .setShapeRadius(shapeRadius)
@@ -273,6 +326,7 @@ class ShadowDrawable private constructor(
             offsetY: Int
         ) {
             val drawable = Builder()
+                .setTarget(view)
                 .setBgColor(bgColor)
                 .setShapeRadius(shapeRadius)
                 .setShadowColor(shadowColor)
@@ -287,6 +341,8 @@ class ShadowDrawable private constructor(
 
     init {
         mBgColor = bgColor
+        mBorderColor = borderColor
+        mBorderWidth = borderWidth
         mShapeRadius = shapeRadius
         mShadowRadius = shadowRadius
         mOffsetX = offsetX
@@ -303,5 +359,25 @@ class ShadowDrawable private constructor(
         mShadowPaint.xfermode = PorterDuffXfermode(PorterDuff.Mode.DST_ATOP)
         mBgPaint = Paint()
         mBgPaint.isAntiAlias = true
+        if (mBorderWidth > 0) {
+            mBorderPaint = Paint()
+            mBorderPaint?.let {
+                it.isAntiAlias = true
+                it.style = Paint.Style.STROKE
+                it.color = mBorderColor
+                it.strokeWidth = mBorderWidth.toFloat()
+            }
+
+        }
+
+    }
+}
+
+fun Shadow(param: ShadowDrawable.Builder.() -> Unit) {
+    val builder = ShadowDrawable.Builder()
+    builder.param()
+    builder.target?.let {
+        it.setLayerType(View.LAYER_TYPE_SOFTWARE, null)
+        ViewCompat.setBackground(it, builder.builder())
     }
 }
