@@ -188,9 +188,9 @@ class ShadowDrawable private constructor(
 
         init {
             mShape = SHAPE_ROUND
-            mShapeRadius = 12
+            mShapeRadius = 0
             mShadowColor = Color.parseColor("#4d000000")
-            mShadowRadius = 18
+            mShadowRadius = 0
             mOffsetX = 0
             mOffsetY = 0
             mBgColor = IntArray(1)
@@ -208,6 +208,15 @@ class ShadowDrawable private constructor(
         fun setShadowDrawable(view: View, drawable: Drawable?) {
             view.setLayerType(View.LAYER_TYPE_SOFTWARE, null)
             ViewCompat.setBackground(view, drawable)
+        }
+
+        fun setShapeRadius(view: View, radius: Int) {
+            val drawable = Builder()
+                    .setShapeRadius(radius)
+                    .builder()
+            view.setLayerType(View.LAYER_TYPE_SOFTWARE, null)
+            ViewCompat.setBackground(view, drawable)
+
         }
 
         /**

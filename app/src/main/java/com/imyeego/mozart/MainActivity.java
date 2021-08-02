@@ -135,7 +135,8 @@ public class MainActivity extends AppCompatActivity {
 
         ShadowDrawable.Companion.setShadowDrawable(binding.mytv, 5
                 , Color.parseColor("#2a000000"), 5, 0, 5);
-
+        ShadowDrawable.Companion.setShapeRadius(binding.iv, 6);
+        binding.iv.setImageURI(Uri.parse("https://wx1.sinaimg.cn/mw690/44734bb9ly1gsd1ma4ph0j20zk0nqgtf.jpg"));
         liveData = new MutableLiveData<>();
         liveData.observe(this, new Observer<String>() {
             @Override
