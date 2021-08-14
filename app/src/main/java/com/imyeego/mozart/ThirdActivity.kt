@@ -115,7 +115,6 @@ class ThirdActivity : BaseActivity(){
     }
 
     private suspend fun getText() : String {
-        Dispatchers
         delay(2000)
         return "liuzhao"
     }
